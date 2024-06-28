@@ -31,7 +31,7 @@ pub struct GpuVoxelMaterial {
 #[derive(Asset, TypePath, AsBindGroup, Debug, Clone)]
 pub struct GpuTerrainUniforms {
     #[uniform(0)]
-    pub render_distance: u32,
+    pub render_distance: f32,
     #[uniform(1)]
     pub materials: [GpuVoxelMaterial; 256],
 }
@@ -39,7 +39,7 @@ pub struct GpuTerrainUniforms {
 impl Default for GpuTerrainUniforms {
     fn default() -> Self {
         Self {
-            render_distance: 16,
+            render_distance: 16.0,
             materials: [default(); 256],
         }
     }
@@ -83,7 +83,7 @@ fn update_chunk_material_singleton(
                 flags: 0,
                 ..Default::default()
             }; 256],
-            render_distance: 32,
+            render_distance: 32.0,
         };
 
         voxel_materials
@@ -131,7 +131,7 @@ impl Plugin for ChunkMaterialPlugin {
             .add_systems(
                 Update,
                 update_chunk_material_singleton
-                    .run_if(resource_changed::<VoxelMaterialRegistry>())
+                    .run_if(resource_changed::<VoxelMaterialRegistry>)
                     .in_set(ChunkMaterialSet),
             );
     }

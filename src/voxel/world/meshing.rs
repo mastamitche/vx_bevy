@@ -12,7 +12,7 @@ use crate::voxel::{
 use bevy::{
     pbr::NotShadowCaster,
     prelude::*,
-    render::{primitives::Aabb, render_resource::PrimitiveTopology},
+    render::{primitives::Aabb, render_asset::RenderAssetUsages, render_resource::PrimitiveTopology},
     tasks::{AsyncComputeTaskPool, Task},
 };
 use futures_lite::future;
@@ -31,7 +31,7 @@ pub fn prepare_chunks(
         entity_commands.insert((
             MaterialMeshBundle {
                 material: (**material).clone(),
-                mesh: meshes.add(Mesh::new(PrimitiveTopology::TriangleList)),
+                mesh: meshes.add(Mesh::new(PrimitiveTopology::TriangleList, RenderAssetUsages::default() )),
                 transform: Transform::from_translation(chunk_key.0.as_vec3()),
                 visibility: Visibility::Hidden,
                 ..Default::default()
@@ -76,7 +76,7 @@ fn queue_mesh_tasks(
                         })
                         .borrow_mut();
 
-                    let mut mesh = Mesh::new(PrimitiveTopology::TriangleList);
+                    let mut mesh = Mesh::new(PrimitiveTopology::TriangleList, RenderAssetUsages::default() );
                     mesh_buffer(&buffer, &mut mesh_buffers, &mut mesh, 1.0);
 
                     mesh
@@ -94,7 +94,7 @@ fn process_mesh_tasks(
     mut chunk_query: Query<(Entity, &Handle<Mesh>, &mut ChunkMeshingTask), With<Chunk>>,
     mut commands: Commands,
 ) {
-    chunk_query.for_each_mut(|(entity, handle, mut mesh_task)| {
+    chunk_query.iter_mut().for_each(|(entity, handle, mut mesh_task)| {
         if let Some(mesh) = future::block_on(future::poll_once(&mut mesh_task.0)) {
             *meshes.get_mut(handle).unwrap() = mesh;
             commands.entity(entity).remove::<ChunkMeshingTask>();

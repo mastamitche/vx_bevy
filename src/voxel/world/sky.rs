@@ -9,7 +9,7 @@ use super::player::PlayerController;
 struct SkyLightEntity(Entity);
 
 fn setup_sky_lighting(mut cmds: Commands) {
-    const _SIZE: f32 = 200.0; //make this dynamic according to view distance???
+    const _SIZE: f32 = 100.0; //make this dynamic according to view distance???
 
     let sky_light_entity = cmds
         .spawn(DirectionalLightBundle {
@@ -17,15 +17,9 @@ fn setup_sky_lighting(mut cmds: Commands) {
             directional_light: DirectionalLight {
                 color: Color::WHITE,
                 shadows_enabled: true,
-                // shadow_projection: OrthographicProjection {
-                //     // left: -SIZE,
-                //     // right: SIZE,
-                //     // bottom: -SIZE,
-                //     // top: SIZE,
-                //     near: -SIZE,
-                //     far: SIZE,
-                //     ..Default::default()
-                // },
+                illuminance:8000.0,
+                shadow_depth_bias: 0.5,
+                shadow_normal_bias: 0.5,
                 ..Default::default()
             },
             ..Default::default()

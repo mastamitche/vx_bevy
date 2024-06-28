@@ -79,7 +79,7 @@ pub fn generate_heightmap_data(key: IVec3, chunk_len: usize) -> Vec<f32> {
         .set_persistence(0.5)
         .set_lacunarity(2.0);
 
-    noise::utils::PlaneMapBuilder::<_, 2>::new(noise)
+    noise::utils::PlaneMapBuilder::<_, 3>::new(noise)
         .set_size(chunk_len, chunk_len)
         .set_x_bounds(key.x as f64, (key.x + chunk_len as i32) as f64)
         .set_y_bounds(key.z as f64, (key.z + chunk_len as i32) as f64)

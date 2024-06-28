@@ -90,13 +90,18 @@ fn prepare_pbr_input_from_voxel_mat(voxel_mat: VoxelMat, frag: Fragment) -> PbrI
 fn fragment(frag: Fragment) -> @location(0) vec4<f32> {
     let material = voxel_materials[voxel_data_extract_material_index(frag.voxel_data)];
 
-    /// PBR lighting input data preparation
+    // PBR lighting input data preparation
     var pbr_input = prepare_pbr_input_from_voxel_mat(material, frag);
     let pbr_colour = tone_mapping(apply_pbr_lighting(pbr_input), view.color_grading);
 
-    // @todo: switch to bevy_pbr::fog
+    // Modify here for softer lighting:
+    // For example, by increasing ambient contribution or adjusting pbr_input before lighting calculations.
 
-    //fragment distance from camera, used to determine amount of fog to apply.
+    // Placeholder for SSAO effect integration
+    // let ssao_factor = compute_ssao(frag.world_position, frag.normal);
+    // pbr_colour *= ssao_factor;
+
+    // Existing fog calculation
     let fog_distance = distance(frag.world_position, view.world_position);
     return ffog_apply_fog(fog_distance, f32(render_distance) * f32(TERRAIN_CHUNK_LENGTH), f32(TERRAIN_CHUNK_LENGTH), pbr_colour);
 }

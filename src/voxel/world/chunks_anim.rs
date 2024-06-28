@@ -44,7 +44,7 @@ fn step_chunk_animation(
     time: Res<Time>,
     mut commands: Commands,
 ) {
-    chunks.for_each_mut(|(entity, mut transform, _chunk, animation)| {
+    chunks.iter_mut().for_each(|(entity, mut transform, _chunk, animation)| {
         let delta = (time.elapsed_seconds() - animation.start_time).min(ANIMATION_DURATION);
 
         let ytransform = (1. - (1. - (delta / ANIMATION_DURATION)).powi(5))

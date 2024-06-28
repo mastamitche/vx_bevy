@@ -6,18 +6,29 @@
 
 use std::f32::consts::PI;
 
-use bevy::{core_pipeline::fxaa::Fxaa, prelude::*};
+use bevy::{core_pipeline::fxaa::Fxaa, prelude::*, render::{settings::{Backends, RenderCreation, WgpuSettings}, RenderPlugin}};
 
 mod debug;
 mod voxel;
 
 fn main() {
     let mut app = App::default();
-    app.add_plugins(DefaultPlugins)
-        .add_plugins(voxel::VoxelWorldPlugin)
-        .add_plugins(debug::DebugUIPlugins)
-        .add_systems(Startup, setup)
-        .run();
+    app
+    .add_plugins(
+    (
+         DefaultPlugins.set(RenderPlugin {
+                        render_creation: RenderCreation::Automatic(WgpuSettings {
+                            backends:Some(Backends::VULKAN|Backends::METAL),
+                                            ..default()
+               			}),
+                        ..Default::default()
+                        
+            }),
+            voxel::VoxelWorldPlugin,
+            debug::DebugUIPlugins
+    ))
+    .add_systems(Startup, setup)
+    .run();
 }
 
 fn setup(mut cmds: Commands) {
