@@ -16,7 +16,6 @@
 
 #import "shaders/voxel_data.wgsl"::{voxel_data_extract_normal, voxel_data_extract_material_index}
 #import "shaders/terrain_uniforms.wgsl"::{VoxelMat, voxel_materials, render_distance, TERRAIN_CHUNK_LENGTH}
-#import "shaders/noise.wgsl"::hash
 #import "shaders/fog.wgsl"::ffog_apply_fog
 
 struct Vertex {
@@ -63,8 +62,7 @@ struct Fragment {
 
 fn prepare_pbr_input_from_voxel_mat(voxel_mat: VoxelMat, frag: Fragment) -> PbrInput {
     var base_color: vec4<f32> = voxel_mat.base_color;
-    base_color = base_color + hash(vec4<f32>(floor(frag.world_position - frag.voxel_normal * 0.5), 1.0)) * 0.0226;
-
+    base_color = base_color;
     let voxel_world_normal = bevy_pbr::mesh_functions::mesh_normal_local_to_world(frag.voxel_normal, frag.instance_index);
 
     var pbr_input: PbrInput = pbr_input_new();
